@@ -1,3 +1,4 @@
+##Generalized Linear Models (glms)
 #Review of Linear models - use lm()
 
 data(longley) #economic dataset  built into R
@@ -174,10 +175,8 @@ glm.Pois = glm(counts ~ group*junk, family=poisson())
 summary(glm.Pois)
 
 
-
-#################For Later
-###########################################
-
+##################################################################
+##Generalized linear mixed models (glmms)
 
 ##Simple Linear Mixed Model (Fixed and Random Effects)
 
