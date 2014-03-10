@@ -183,11 +183,7 @@ summary(freq.sq)
 
 ####Step 1: Specify model 
 
-getwd()
-setwd("Models")
-list.files()
-
-modFile = "model_sq.R"
+modFile = "models/model_sq.R"
 
 ####Step 2: Actual collected data
 
@@ -230,7 +226,7 @@ list (
 }
 
 #####That's everything - now bundle into R2jags
-
+library(R2jags)
 sq.out <- jags(
             model.file = modFile,
             data = sq.data, 
@@ -249,4 +245,4 @@ traceplot(sq.out)
             
 hist(sq.out$BUGSoutput$sims.list$beta.mast, xlim=c(0,1))
 
-
+mean(sq.out$BUGSoutput$sims.list$beta.mast>0)

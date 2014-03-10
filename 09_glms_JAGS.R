@@ -75,7 +75,7 @@ nb = 2000
 nt = 20
 
 #JAGS call
-
+require(R2jags)
 out <- jags(
   model.file = modFile,
   data = inp.data, 
