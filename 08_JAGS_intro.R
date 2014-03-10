@@ -38,13 +38,8 @@ library(R2jags)
 #Model syntax is very similar to R with some key differences
 #For example "<-" must be used instead of "="
 
-#make sure the file is in current working directory
-getwd()
-setwd("Models")
-list.files()
-
 #The model itself is in a separate R script - put the path into an object
-modFile = "model_mean.R"
+modFile = "models/model_mean.R"
 
 ####Step 2: Actual collected data
 

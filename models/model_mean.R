@@ -44,4 +44,3 @@ model {
   precision <- 1 / population.variance # Precision = 1/variance
   
 }
-#and always end with a closing bracket
