@@ -214,6 +214,8 @@ summary(oats.mixed)
 #trees that could have been chosen for the study, and I'm not particularly interested
 #in the variation between trees other than making sure it doesn't pollute my other inferences
 
+weevil = read.csv('data/weevil.csv',header=TRUE)
+
 weevil[1:10,]
 weevil$treecode = as.factor(weevil$treecode)
 
