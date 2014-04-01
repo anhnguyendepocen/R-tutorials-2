@@ -33,3 +33,5 @@ Summary of tutorial contents:
 9.  Generalized linear models (logistic and Poisson) fit in JAGS
 
 10. Mixed models in JAGS (i.e., including both fixed and random effects)
+
+More to come.
