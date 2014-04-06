@@ -1,3 +1,71 @@
+#Random effects in BUGS
+#Mixed model
+#Re-visit oats example dataset from tutorial 6
+
+library(nlme)
+library(MASS)
+data(oats)
+
+#Give it reasonable names
+names(oats) = c('block', 'variety', 'nitrogen', 'yield')
+
+oats[1:10,]
+
+N  <- dim(oats)[1]
+ngrp <- length(unique(oats$block))
+
+yield <- oats$yield
+
+#Convert random effects from roman numerals to integers
+
+block <- as.numeric(oats$block)
+
+#BUGS cannot handle regular factor variables - need to convert to dummy variables
+
+#Variety: 3 levels so 2 variables needed (we will set 'victory' as the baseline)
+var.golden <- var.marv <- rep(0,N)
+var.golden[oats$variety=='Golden.rain'] = 1
+var.marv[oats$variety=='Marvellous'] = 1
+
+#Nitrogen: 4 levels so 3 variables needed (0 cwt will be baseline)
+n6 <- n4 <- n2 <- rep(0,N)
+n2[oats$nitrogen=='0.2cwt'] = 1
+n4[oats$nitrogen=='0.4cwt'] = 1
+n6[oats$nitrogen=='0.6cwt'] = 1
+
+data.frame(block,var.golden,var.marv,n2,n4,n6,yield)[1:10,]
+
+inp.data <- list(N=N,ngrp=ngrp,block=block,yield=yield,
+                 var.golden=var.golden,var.marv=var.marv,n2=n2,n4=n4,n6=n6)
+
+modFile <- 'models/model_oats.R'
+
+params <- c('block.mean','block.sd','block.intercept','ind.sd','beta.golden', 'beta.marv',
+            'beta.n2','beta.n4','beta.n6','fit','fit.new')
+
+require(simplejags)
+
+out <- simplejags(data=inp.data,inits=NULL,model.file=modFile,parameters.to.save=params,
+                  n.chains=3,n.adapt=0,n.iter=4000,n.burnin=2000,n.thin=2)
+
+out
+
+#compare to frequentist
+DF <- within(oats, variety <- relevel(variety, ref = 'Victory'))
+oats.mixed = lme(yield ~ variety + nitrogen, random = ~1|block, data=DF)
+summary(oats.mixed)
+
+#Look at diagnostics
+xyplot(out)
+traceplots(out)
+densityplot(out)
+
+hist(out$sims.list$beta.n6)
+
+postPredCheck(out,actual='fit',new='fit.new')
+
+#GLMM
+
 #Simulate data
 #Examining probability of parasitic infection in mice as a function of 
 #exposure (i.e. latrine density), and later, population membership as a random effect
@@ -27,7 +95,7 @@ latrine.sc = scale(latrine)
 #Random effect
 
 #Hyperparameters
-intercept.mean <- 1.2    # mu_alpha
+intercept.mean <- 1.7    # mu_alpha
 intercept.sd <- 0.5  	# sigma_alpha
 #Generate random intercepts
 intercept.effects<-rnorm(n = npop, mean = intercept.mean, sd = intercept.sd)
@@ -81,26 +149,27 @@ nb <- 2000 # Number of draws to discard as burn-in
 nt <- 5 # Thinning rate
 
 #Run JAGS
-require(R2jags)
-out <- jags(
+require(simplejags)
+out <- simplejags(
             data = my.data, 
             inits = NULL, 
             parameters.to.save = params,
             model.file = modFile, 
-            n.thin = nt, n.chains = nc, n.burnin = nb, n.iter = ni, 
+            n.thin = nt, n.chains = nc, n.burnin = nb, n.iter = ni 
             )
 
 #Look at output and compare
 out
 
+xyplot(out)
+traceplots(out)
+
+densityplot(out)
+
 truth
 
 #Check fit
-plot(out$BUGSoutput$sims.list$fit,out$BUGSoutput$sims.list$fit.new)
-abline(0,1)
-
-#Bayesian p-value
-mean(out$BUGSoutput$sims.list$fit>out$BUGSoutput$sims.list$fit.new)
+postPredCheck(out)
 
 #Check in R
 library(MASS)
