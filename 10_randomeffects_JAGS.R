@@ -2,6 +2,9 @@
 #Mixed model
 #Re-visit oats example dataset from tutorial 6
 
+#New package for running JAGS:
+#http://code.kenkellner.com/simplejags/downloads/simplejags_0.01-1.zip
+
 library(nlme)
 library(MASS)
 data(oats)
