@@ -19,7 +19,7 @@ ngrp <- length(unique(oats$block))
 
 yield <- oats$yield
 
-#Convert random effects from roman numerals to integers
+#Convert blocks from roman numerals to integers
 
 block <- as.numeric(oats$block)
 
@@ -90,7 +90,7 @@ pop = gl(n = npop, k = nmice)
 #Generate random latrine densities (per ha)
 
 latrine = runif(n, 5,20)
-latrine.sc = scale(latrine)
+latrine.sc = as.numeric(scale(latrine))
 
 #Set parameter values
 #First for case with common intercept
@@ -172,6 +172,7 @@ densityplot(out)
 truth
 
 #Check fit
+xyplot(out)
 postPredCheck(out)
 
 #Check in R
@@ -179,6 +180,6 @@ library(MASS)
 
 lme.fit = glmmPQL(obs.inf ~ latrine, random = ~1|pop, data=data,family=binomial)
 
-lme.fit
+summary(lme.fit)
 
 truth
