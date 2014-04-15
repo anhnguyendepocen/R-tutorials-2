@@ -34,4 +34,8 @@ Summary of tutorial contents:
 
 10. Mixed models in JAGS (i.e., including both fixed and random effects)
 
+11. A demonstration of common errors when running analyses using JAGS
+
+12. More advanced models fit in a Bayesian framework including occupancy and N-mixture models
+
 More to come.

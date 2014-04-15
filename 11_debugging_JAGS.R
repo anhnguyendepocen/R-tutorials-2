@@ -2,7 +2,7 @@
 #Baseline values
 
 require(simplejags)
-modFile = 'models/model_parasite_mixed.R'
+modFile = 'models/model_debug.R'
 inits = NULL
 params = c('alpha','b.sex','b.latrine')
 
