@@ -14,6 +14,7 @@ n = 100
 nobs = 5
 forest = rnorm(n,0,1)
 
+#True values
 alpha = 2
 b.forest = 3.1
 p = 0.35
