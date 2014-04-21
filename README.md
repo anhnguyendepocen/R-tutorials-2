@@ -27,8 +27,7 @@ Summary of tutorial contents:
 
 7.  A brief introduction to maximum likelihood estimation in R using optim()
 
-8.  Introduction to JAGS (Just Another Gibbs Sampler) and the R interface package R2jags
-    for doing Bayesian analysis in R
+8.  Introduction to JAGS (Just Another Gibbs Sampler) and the R interface package R2jags for doing Bayesian analysis in R
     
 9.  Generalized linear models (logistic and Poisson) fit in JAGS
 

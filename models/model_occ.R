@@ -6,12 +6,15 @@ model {
   
   for (i in 1:n){
     
+    #True occupancy at site i
     logit(psi[i]) <- alpha + b.forest*forest[i]
     
     z[i] ~ dbern(psi[i])
     
+    #Generate p - has to be 0 if site is unoccupied
     ptemp[i] <- z[i]*p
     
+    #Model actual data
     obs[i] ~ dbinom(ptemp[i],nobs)
     
   }
@@ -24,6 +27,7 @@ model {
   
   #Derived parameters
   
+  #Probability of occupancy
   prob.occ <- mean(z[])
   
 }

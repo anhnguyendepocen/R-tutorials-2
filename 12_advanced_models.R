@@ -70,10 +70,11 @@ summary(freq.out)
 ###################################################
 
 #Example 2: N-mixture model
+#Model abundance without marked animals
 
 #Simulate data
 
-#Number of sites
+#Number of sites / true parameter values
 
 nsites = 100
 forest = rnorm(nsites,0,1)
@@ -83,14 +84,18 @@ b.forest = -0.8
 #Ecological process
 
 N = vector(length=nsites)
+#Generate abundance (Poisson) for each site based on forest variable
 for (i in 1:nsites){
   lambda = exp(alpha+b.forest*forest[i])
   N[i] = rpois(1,lambda)
 }
 
 #Observation process
+#How many sampling occasions?
 nobs = 5
+#Constant probability of detection
 p = 0.45
+#How many animals were observed at each site on each occasion?
 obs = matrix(data=NA,nrow=n,ncol=nobs)
 for (i in 1:nsites){
   for (j in 1:nobs){
@@ -103,6 +108,7 @@ data = list(nsites=nsites,nobs=nobs,obs=obs,forest=forest)
 
 params = c('alpha','b.forest','p','N')
 
+#Need to initialize latent parameter N - using max # of animals observed at that site
 Nit <- apply(obs,1,max)
 inits = function(){list(N=Nit)}
 
@@ -116,9 +122,9 @@ out2
 
 #Check correspondance of true and estimated N
 
-plot(N,out2$mean[1:100],xlab="Actual N",ylab="Estimated N",
+plot(N,out2$mean$N[1:100],xlab="Actual N",ylab="Estimated N",
      main="N Comparison")
 abline(1,1)
 
 #Check correlation
-cor(N,unlist(out2$mean[1:100]))
+cor(N,out2$mean$N[1:100])

@@ -6,10 +6,12 @@ model {
   
   for (i in 1:nsites){
     
+    #Predictor for true abundance N (Poisson)
     lambda[i] <- exp(alpha + b.forest*forest[i])
     
     N[i] ~ dpois(lambda[i])
     
+    #Observation process (binomial)
     for (j in 1:nobs){
       
       obs[i,j] ~ dbinom(p,N[i])
