@@ -37,4 +37,4 @@ Summary of tutorial contents:
 
 12. More advanced models fit in a Bayesian framework including occupancy and N-mixture models
 
-More to come.
+13. Introduction to resampling tests in R (randomization/permutation tests)
