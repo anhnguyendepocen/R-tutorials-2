@@ -49,7 +49,7 @@ for (i in 1:n){
 
 ###############################
 ##Setup analysis in JAGS
-library(R2jags)
+library(jagsUI)
 
 #Identify model file
 modFile = "models/model_parasite.R"
@@ -75,7 +75,6 @@ nb = 2000
 nt = 20
 
 #JAGS call
-require(R2jags)
 out <- jags(
   model.file = modFile,
   data = inp.data, 
@@ -95,19 +94,19 @@ summary(glm(obs.inf~latrine.sc+sex, family=binomial))
 truth
 
 #Plot derived parameters
-attach(out$BUGSoutput$mean)
+attach(out$means)
 barplot(c(mean.M,mean.F),names=c('Male','Female'),ylab="Probability of Infection",ylim=c(0,1))
 detach()
 
 #Posterior predictive check: check model fit
 #Points should be scattered evenly above and below line
 
-plot(out$BUGSoutput$sims.list$fit,out$BUGSoutput$sims.list$fit.new)
+plot(out$sims.list$fit,out$sims.list$fit.new)
 abline(0,1, lwd = 2, col = "black")
 
 #Calculate Bayesian p-value
 
-Bpval = mean(out$BUGSoutput$sims.list$fit.new > out$BUGSoutput$sims.list$fit)
+Bpval = mean(out$sims.list$fit.new > out$sims.list$fit)
 
 #Values near 0.5 are ideal
 Bpval
@@ -163,7 +162,7 @@ counts
 
 ###################
 ##Analysis in JAGS
-library(R2jags)
+library(jagsUI)
 
 #Identify model file
 modFile = "models/model_acorns.R"

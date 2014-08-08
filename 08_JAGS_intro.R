@@ -10,8 +10,15 @@ sd(mass)
 freq = lm(mass ~ 1)
 summary(freq)
 
-#Bayesian Analysis
-library(R2jags)
+#Bayesian Analysis - using jagsUI
+#https://github.com/kenkellner/jagsUI
+#library(devtools)
+#install_github('kenkellner/jagsUI')
+
+library(jagsUI)
+
+#Look at docs for function we're using
+?jags
 
 ###What do we need for this analysis?
 
@@ -108,28 +115,22 @@ out <- jags(
 out
 
 names(out)
-names(out$BUGSoutput)
 
-out$BUGSoutput$sims.array
+out$sims.list
 
-#Look at convergence plots manually
-plot(out$BUGSoutput$sims.array[,1,2],type="l",col="red",ylim=c(590,610))
-lines(out$BUGSoutput$sims.array[,2,2],type="l",col="blue")
-lines(out$BUGSoutput$sims.array[,3,2],type="l",col="green")
-
-#easier way
+#Look at convergence plots
 traceplot(out)
 
 #Look at posterior distributions for important parameters using hist()
-hist(out$BUGSoutput$sims.list$population.mean)
-hist(out$BUGSoutput$sims.list$population.sd)
+hist(out$sims.list$population.mean)
+hist(out$sims.list$population.sd)
 
 #Inference example
 #What is the probability the mean is greater than 598?
 #This question cannot be answered directly with frequentist stats
 #We simply calculate the proportion of hte posterior that is > 598
 
-prob <- mean(out$BUGSoutput$sims.list$population.mean>598)
+prob <- mean(out$sims.list$population.mean>598)
 
 prob
 
@@ -220,8 +221,8 @@ list (
       )
 }
 
-#####That's everything - now bundle into R2jags
-library(R2jags)
+#####That's everything - now bundle into jagsUI
+library(jagsUI)
 sq.out <- jags(
             model.file = modFile,
             data = sq.data, 
@@ -238,6 +239,6 @@ traceplot(sq.out)
             
 #Inference
             
-hist(sq.out$BUGSoutput$sims.list$beta.mast, xlim=c(0,1))
+hist(sq.out$sims.list$beta.mast, xlim=c(0,1))
 
-mean(sq.out$BUGSoutput$sims.list$beta.mast>0)
+mean(sq.out$sims.list$beta.mast>0)

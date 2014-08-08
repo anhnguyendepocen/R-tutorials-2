@@ -46,10 +46,10 @@ modFile <- 'models/model_oats.R'
 params <- c('block.mean','block.sd','block.intercept','ind.sd','beta.golden', 'beta.marv',
             'beta.n2','beta.n4','beta.n6','fit','fit.new')
 
-require(simplejags)
+library(jagsUI)
 
-out <- simplejags(data=inp.data,inits=NULL,model.file=modFile,parameters.to.save=params,
-                  n.chains=3,n.adapt=0,n.iter=4000,n.burnin=2000,n.thin=2)
+out <- jags(data=inp.data,inits=NULL,model.file=modFile,parameters.to.save=params,
+                  n.chains=3,n.iter=4000,n.burnin=2000,n.thin=2)
 
 out
 
@@ -60,12 +60,12 @@ summary(oats.mixed)
 
 #Look at diagnostics
 xyplot(out)
-traceplots(out)
+traceplot(out)
 densityplot(out)
 
 hist(out$sims.list$beta.n6)
 
-postPredCheck(out,actual='fit',new='fit.new')
+pp.check(out,actual='fit',new='fit.new')
 
 #GLMM
 
@@ -135,7 +135,7 @@ modFile = 'models/model_parasite_mixed.R'
 
 my.data <- list(infect = data[,1], 
                    nobs = length(data[,1]), 
-                   pop = data[,2],
+                   pop = as.numeric(data[,2]),
                    npop = length(unique(data[,2])),
                    latrine = data[,3]
                    )
@@ -152,8 +152,8 @@ nb <- 2000 # Number of draws to discard as burn-in
 nt <- 5 # Thinning rate
 
 #Run JAGS
-require(simplejags)
-out <- simplejags(
+library(jagsUI)
+out <- jagsUI(
             data = my.data, 
             inits = NULL, 
             parameters.to.save = params,
@@ -165,15 +165,14 @@ out <- simplejags(
 out
 
 xyplot(out)
-traceplots(out)
+traceplot(out)
 
 densityplot(out)
 
 truth
 
 #Check fit
-xyplot(out)
-postPredCheck(out)
+pp.check(out,'fit','fit.new')
 
 #Check in R
 library(MASS)

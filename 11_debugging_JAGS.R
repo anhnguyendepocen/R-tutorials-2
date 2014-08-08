@@ -1,7 +1,7 @@
 #####################################################################
 #Baseline values
 
-require(simplejags)
+library(jagsUI)
 modFile = 'models/model_debug.R'
 inits = NULL
 params = c('alpha','b.sex','b.latrine')
@@ -16,23 +16,28 @@ data
 inp.data <- c(data$sex,scale(data$latrine),data$obs.inf,length(data$obs.inf))
 
 ###########################################################################################
-out1 = simplejags(data=inp.data,inits=NULL,parameters.to.save=params,model.file=modFile,
+out1 = jags(data=inp.data,inits=NULL,parameters.to.save=params,model.file=modFile,
                   n.adapt=100,n.iter=1000,n.burnin=500,n.thin=2,n.chains=3)
 ###########################################################################################
 
-#ERROR: 'data must be a list or environment'
+#ERROR: 'Input data must be a list of data objects or a vector of object names (as strings)'
 #inp.data above is currently a vector.
 
 inp.data
 
 inp.data <- list(data$sex,scale(data$latrine),data$obs.inf,length(data$obs.inf))
 
-#ERROR: 'cannot evaluate upper index of counter i'
-#What is counter i? Look at model file.
-#JAGS doesn't know what n is, because we haven't told it!
+#ERROR: 'At least one of the elements in your data list does not have a name'
 #We need to name the list elements to match the model
 
 inp.data
+
+inp.data <- list(sex=data$sex,latrine=scale(data$latrine),obs.inf=data$obs.inf,n=length(data$obs.inf))
+
+#ERROR: sex is a factor, we need it to be numeric.
+
+data$sex <- as.numeric(data$sex)
+data$sex[data$sex==2] = 0
 
 inp.data <- list(sex=data$sex,latrine=scale(data$latrine),obs.inf=data$obs.inf,n=length(data$obs.inf))
 
@@ -41,13 +46,6 @@ inp.data <- list(sex=data$sex,latrine=scale(data$latrine),obs.inf=data$obs.inf,n
 #We've probably specified the wrong model.
 
 modFile = 'models/model_debug.R'
-
-#ERROR: 'dimension mismatch' related to data latrine. Don't worry so much about the wording -
-#look at 'latrine' and see if something is up. It's not numeric because we scaled it!
-
-inp.data <- list(sex=data$sex,
-                 latrine=as.numeric(scale(data$latrine)),
-                 obs.inf=data$obs.inf,n=length(data$obs.inf))
 
 #ERROR: error in node - inconsistent with unobserved parents
 #this can mean a lot of things. Take a look at the specified value and see if it seems weird.
@@ -59,16 +57,7 @@ data$obs.inf[150] = 1 #remember to read in inp.data again!!
 inp.data <- list(sex=data$sex,latrine=as.numeric(scale(data$latrine)),
                  obs.inf=data$obs.inf,n=length(data$obs.inf))
 
-#NOTE: it runs even though sex is a factor in inp.data! JAGS converts it to an indicator variable.
-#I do not suggest doing this. Always convert to an indicator variable first (this would crash
-#if there were more than 2 categories anyways)
-#In this case you get the opposite inference because JAGS converts male to '1' and female to '0'
-#even though the opposite is true
-
-inp.data$sex = as.numeric(inp.data$sex)
-inp.data$sex[inp.data$sex==2] = 0
-
-#Now, the inference is correct.
+#Now the model should run.
 
 ##########################################################################################
 
@@ -78,7 +67,7 @@ inp.data$sex[inp.data$sex==2] = 0
 modFile = 'models/model_broken.R'
 
 ###########################################################################################
-out2 = simplejags(data=inp.data,inits=NULL,parameters.to.save=params,model.file=modFile,
+out2 = jags(data=inp.data,inits=NULL,parameters.to.save=params,model.file=modFile,
                   n.adapt=100,n.iter=1000,n.burnin=500,n.thin=2,n.chains=3)
 ###########################################################################################
 
@@ -106,7 +95,7 @@ modFile = 'models/model_fixed.R'
 modFile = 'models/model_brokenpriors.R'
 
 ###########################################################################################
-out3 = simplejags(data=inp.data,inits=NULL,parameters.to.save=params,model.file=modFile,
+out3 = jags(data=inp.data,inits=NULL,parameters.to.save=params,model.file=modFile,
                   n.adapt=100,n.iter=1000,n.burnin=500,n.thin=2,n.chains=3)
 ###########################################################################################
 

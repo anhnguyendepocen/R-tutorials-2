@@ -51,13 +51,13 @@ zinit[obs!=0] = 1
 
 inits = function(){list(z=zinit)}
 
-library(simplejags)
-out <- simplejags(data=data,inits=inits,parameters.to.save=params,model.file=modFile,
+library(jagsUI)
+out <- jags(data=data,inits=inits,parameters.to.save=params,model.file=modFile,
                   n.adapt=100,n.chains=3,n.iter=2000,n.burnin=1000,n.thin=2)
 
 out
 
-traceplots(out)
+traceplot(out)
 densityplot(out)
 
 #Simple logistic regression in R
@@ -114,8 +114,8 @@ inits = function(){list(N=Nit)}
 
 modFile = 'models/model_Nmix.R'
 
-library(simplejags)
-out2 = simplejags(data=data,inits=inits,parameters.to.save=params,model.file=modFile,
+library(jagsUI)
+out2 = jags(data=data,inits=inits,parameters.to.save=params,model.file=modFile,
                   n.adapt=100,n.chains=3,n.iter=3000,n.burnin=1500,n.thin=2)
 
 out2
