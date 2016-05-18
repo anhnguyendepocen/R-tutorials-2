@@ -116,7 +116,7 @@ all.ppp = ppp(x=tweets$easting,y=tweets$northing,xrange,yrange)
 plot(all.ppp)
 
 #Purdue building map
-load('data/images.Rda')
+load('data/images.Rdata')
 plot(building.map,add=TRUE,col='red')
 #Obviously, tweets clustered into buildings
 
